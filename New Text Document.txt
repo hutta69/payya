@@ -1,4 +1,7 @@
 ----------------------------LCD Scroll------------------------------
+ARDUINO UNO
+LM016L
+
 #include <LiquidCrystal.h>
 
 LiquidCrystal lcd(13,12,11,10,9,8);
@@ -23,6 +26,9 @@ void loop() {
 --------------------------------------------------------------------
 
 -------------------------LCD Two Line Scroll------------------------
+ARDUINO UNO
+LM016L
+
 #include <LiquidCrystal.h>
 
 // Initialize the LCD (RS, Enable, D4, D5, D6, D7 pins)
@@ -51,6 +57,13 @@ void loop() {
 }
 ----------------------------------------------------------------------
 ---------------------PIR Sensor---------------------------------------
+ARDUINO UNO
+LM016L
+BUZZER
+LED-RED
+PIR SENSOR
+LOGICSTATE
+
 #include <LiquidCrystal.h>
 
 // Pin definitions
@@ -100,6 +113,14 @@ void loop() {
 }
 -------------------------------------------------------------------------
 --------------------------------Rain Sensor------------------------------
+ARDUINO UNO
+LM016L
+LED-GREEN
+LED-RED
+RAIN SENSOR
+BUZZER
+LOGICSTATE
+
 #include<LiquidCrystal.h>
 LiquidCrystal lcd(13,12,11,10,9,8);
 
@@ -149,6 +170,12 @@ delay(1000);
 }
 -------------------------------------------------------------------------
 --------------------------Ultrasonic Sensor------------------------------
+ARDUINO UNO
+LM016L
+BUZZER
+ULTRASONIC SENSOR
+POT-HG
+
 #include <LiquidCrystal.h>
 
 // Pins for ultrasonic sensor
