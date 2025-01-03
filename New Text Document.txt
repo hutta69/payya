@@ -120,24 +120,32 @@ LED-RED
 RAIN SENSOR
 BUZZER
 LOGICSTATE
+MOTOR-PWMSERVO
+GENERATOR-DC
 
 #include<LiquidCrystal.h>
+#include<Servo.h>
 LiquidCrystal lcd(13,12,11,10,9,8);
+Servo myServo;
 
 const int rainPin = 2;
 const int buzz = 1;
 const int red = 6;
 const int green = 7;
 
+
+
 void setup() {
   lcd.begin(16,2);
   lcd.print("ready to display");
   delay(200);
+  myServo.attach(3);
   // lcd.clear();
   pinMode(rainPin, INPUT);
   pinMode(buzz, OUTPUT);
   pinMode(red,OUTPUT);
   pinMode(green, OUTPUT);
+  
 
 }
 
@@ -149,6 +157,7 @@ void loop() {
     digitalWrite(buzz, HIGH);
     digitalWrite(red, HIGH);
      digitalWrite(green, LOW);
+     myServo.write(75);
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("rain");
@@ -159,6 +168,8 @@ void loop() {
   digitalWrite(buzz,LOW);
   digitalWrite(green, HIGH);
    digitalWrite(red, LOW);
+   
+   myServo.write(0);
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("no rain");
