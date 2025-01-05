@@ -1,257 +1,492 @@
-----------------------------LCD Scroll------------------------------
-ARDUINO UNO
-LM016L
+Library Management System
+Save name ---->LibraryDemo.java
 
-#include <LiquidCrystal.h>
+import java.util.ArrayList;
+import java.util.Scanner;
 
-LiquidCrystal lcd(13,12,11,10,9,8);
+class Book {
+    private String title, author;
+    private boolean isAvailable = true;
 
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+    }
 
-void setup() {
-  // put your setup code here, to run once:
-  lcd.begin(16, 2);
+    public String getTitle() { return title; }
+    public boolean isAvailable() { return isAvailable; }
 
+    public void borrowBook() {
+        if (isAvailable) {
+            isAvailable = false;
+            System.out.println("Borrowed: " + title);
+        } else {
+            System.out.println("Not available.");
+        }
+    }
 
-  lcd.print("South Eastern University");
-  delay(200);
+    public void returnBook() {
+        isAvailable = true;
+        System.out.println("Returned: " + title);
+    }
 
-
-}
-void loop() {
-
-  lcd.scrollDisplayRight();
-  delay(500);
-
-}
---------------------------------------------------------------------
-
--------------------------LCD Two Line Scroll------------------------
-ARDUINO UNO
-LM016L
-
-#include <LiquidCrystal.h>
-
-// Initialize the LCD (RS, Enable, D4, D5, D6, D7 pins)
-LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
-
-void setup() {
-  // Initialize the LCD with 16 columns and 2 rows
-  lcd.begin(16, 2);
-
-  // Print text on the first line
-  lcd.setCursor(0, 0); // Set cursor to column 0, row 0
-  lcd.print("THIS IS A TEXT");
-
-  // Print text on the second line
-  lcd.setCursor(0, 1); // Set cursor to column 0, row 1
-  lcd.print("SCROLLING TEXT");
-
-  // Brief delay to allow initial text display
-  delay(1000);
+    @Override
+    public String toString() {
+        return "Title: " + title + ", Author: " + author + ", Available: " + (isAvailable ? "Yes" : "No");
+    }
 }
 
-void loop() {
-  // Scroll the entire display to the right
-  lcd.scrollDisplayRight();
-  delay(200); // Adjust delay for smoother scrolling
-}
-----------------------------------------------------------------------
----------------------PIR Sensor---------------------------------------
-ARDUINO UNO
-LM016L
-BUZZER
-LED-RED
-PIR SENSOR
-LOGICSTATE
+class Library {
+    private ArrayList<Book> books = new ArrayList<>();
 
-#include <LiquidCrystal.h>
+    public void addBook(Book book) { books.add(book); }
 
-// Pin definitions
-const int ledPin = 7;    // LED output
-const int buzzerPin = 6; // Buzzer output
-const int motionPin = 5;  // PIR sensor input
+    public void displayBooks() {
+        for (Book book : books) {
+            System.out.println(book);
+        }
+    }
 
-// LCD setup (with standard 16-pin connection)
-LiquidCrystal lcd(13,12,11,10,9,8); // RS, E, D4, D5, D6, D7 pins
-
-void setup() {
-  // Initialize pins
-  pinMode(motionPin, INPUT);
-  pinMode(ledPin, OUTPUT);
-  pinMode(buzzerPin, OUTPUT);
-
-  // Start LCD
-  lcd.begin(16, 2);
- 
- 
+    public Book findBook(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) return book;
+        }
+        return null;
+    }
 }
 
-void loop() {
-  // Read PIR sensor
-  int motionDetected = digitalRead(motionPin);
+public class LibraryDemo {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library();
 
-  if (motionDetected == HIGH) {
-    // Motion detected
-    digitalWrite(ledPin, HIGH);  // Turn on LED
-    digitalWrite(buzzerPin, HIGH); // Turn on Buzzer
-    lcd.setCursor(0, 1);
-    lcd.print("Motion Detected");
-    
- 
-  } else {
-    // No motion detected
-    digitalWrite(ledPin, LOW);  // Turn off LED
-    digitalWrite(buzzerPin, LOW); // Turn off Buzzer
-    lcd.clear();
-    lcd.setCursor(0, 1);
-    lcd.print("No Motion     "); // Clear previous message
-  
-  }
-  
-  // Delay for a short time to stabilize PIR sensor
-  delay(200);
-}
--------------------------------------------------------------------------
---------------------------------Rain Sensor------------------------------
-ARDUINO UNO
-LM016L
-LED-GREEN
-LED-RED
-RAIN SENSOR
-BUZZER
-LOGICSTATE
-MOTOR-PWMSERVO
-GENERATOR-DC
+        while (true) {
+            System.out.println("1. Add Book\n2. Display Books\n3. Borrow Book\n4. Return Book\n5. Exit");
+            int choice = scanner.nextInt(); scanner.nextLine();
 
-#include<LiquidCrystal.h>
-#include<Servo.h>
-LiquidCrystal lcd(13,12,11,10,9,8);
-Servo myServo;
+            if (choice == 1) {
+                System.out.print("Enter title: ");
+                String title = scanner.nextLine();
+                System.out.print("Enter author: ");
+                String author = scanner.nextLine();
+                library.addBook(new Book(title, author));
+            } else if (choice == 2) {
+                library.displayBooks();
+            } else if (choice == 3) {
+                System.out.print("Enter title to borrow: ");
+                Book book = library.findBook(scanner.nextLine());
+                if (book != null) book.borrowBook();
+                else System.out.println("Book not found.");
+            } else if (choice == 4) {
+                System.out.print("Enter title to return: ");
+                Book book = library.findBook(scanner.nextLine());
+                if (book != null) book.returnBook();
+                else System.out.println("Book not found.");
+            } else if (choice == 5) {
+                System.out.println("Goodbye!");
+                break;
+            } else {
+                System.out.println("Invalid choice.");
+            }
+        }
 
-const int rainPin = 2;
-const int buzz = 1;
-const int red = 6;
-const int green = 7;
-
-
-
-void setup() {
-  lcd.begin(16,2);
-  lcd.print("ready to display");
-  delay(200);
-  myServo.attach(3);
-  // lcd.clear();
-  pinMode(rainPin, INPUT);
-  pinMode(buzz, OUTPUT);
-  pinMode(red,OUTPUT);
-  pinMode(green, OUTPUT);
-  
-
+        scanner.close();
+    }
 }
 
-void loop() {
 
-  int motion = digitalRead(rainPin);
+---------------------------------------------------------------------------------------------------
+Time Management Program
+Save name ---->Time.java
 
-  if (motion == HIGH) {
-    digitalWrite(buzz, HIGH);
-    digitalWrite(red, HIGH);
-     digitalWrite(green, LOW);
-     myServo.write(75);
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("rain");
-    
-  
-  }
-  else {
-  digitalWrite(buzz,LOW);
-  digitalWrite(green, HIGH);
-   digitalWrite(red, LOW);
-   
-   myServo.write(0);
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("no rain");
+import java.util.Scanner;
 
-  
+class Time {
+    private int hours, minutes, seconds;
+
+    public Time(int hours, int minutes, int seconds) {
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+        normalizeTime();
+    }
+
+    private void normalizeTime() {
+        minutes += seconds / 60;
+        seconds %= 60;
+        hours += minutes / 60;
+        minutes %= 60;
+    }
+
+    public void addTime(int additionalHours, int additionalMinutes, int additionalSeconds) {
+        hours += additionalHours;
+        minutes += additionalMinutes;
+        seconds += additionalSeconds;
+        normalizeTime();
+    }
+
+    public void subtractTime(int subtractedHours, int subtractedMinutes, int subtractedSeconds) {
+        int totalSeconds = (hours * 3600 + minutes * 60 + seconds) - (subtractedHours * 3600 + subtractedMinutes * 60 + subtractedSeconds);
+        if (totalSeconds < 0) totalSeconds = 0;
+        hours = totalSeconds / 3600;
+        minutes = (totalSeconds % 3600) / 60;
+        seconds = totalSeconds % 60;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input initial time
+        System.out.print("Enter initial hours: ");
+        int hours = scanner.nextInt();
+        System.out.print("Enter initial minutes: ");
+        int minutes = scanner.nextInt();
+        System.out.print("Enter initial seconds: ");
+        int seconds = scanner.nextInt();
+
+        Time time = new Time(hours, minutes, seconds);
+        System.out.println("Initial Time: " + time);
+
+        // Input time to add
+        System.out.print("Enter hours to add: ");
+        int addHours = scanner.nextInt();
+        System.out.print("Enter minutes to add: ");
+        int addMinutes = scanner.nextInt();
+        System.out.print("Enter seconds to add: ");
+        int addSeconds = scanner.nextInt();
+
+        time.addTime(addHours, addMinutes, addSeconds);
+        System.out.println("After Adding: " + time);
+
+        // Input time to subtract
+        System.out.print("Enter hours to subtract: ");
+        int subHours = scanner.nextInt();
+        System.out.print("Enter minutes to subtract: ");
+        int subMinutes = scanner.nextInt();
+        System.out.print("Enter seconds to subtract: ");
+        int subSeconds = scanner.nextInt();
+
+        time.subtractTime(subHours, subMinutes, subSeconds);
+        System.out.println("After Subtracting: " + time);
+
+        scanner.close();
+    }
 }
-delay(1000);
 
-}
--------------------------------------------------------------------------
---------------------------Ultrasonic Sensor------------------------------
-ARDUINO UNO
-LM016L
-BUZZER
-ULTRASONIC SENSOR
-POT-HG
+--------------------------------------------------------------------------------------------------------------------------------------------------
+AddingNumbers program
+Save name ---->Time.java
 
-#include <LiquidCrystal.h>
+import java.util.Scanner;
 
-// Pins for ultrasonic sensor
-const int trigPin = 7;
-const int echoPin = 6;
+// Short Version: AddingNumbers Program with User Input
 
-// Pins for buzzer
-const int buzzerPin = 5;
+class AddingNumbers {
+    protected int number1, number2;
 
-// Initialize the LCD (RS, E, D4, D5, D6, D7)
-LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
+    public AddingNumbers(int number1, int number2) {
+        this.number1 = number1;
+        this.number2 = number2;
+    }
 
-void setup() {
-  // Set up LCD
-  lcd.begin(16, 2);  // 16 columns and 2 rows
-  lcd.print("Distance: ");
-  
-  // Set up ultrasonic sensor pins
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  
-  // Set up buzzer
-  pinMode(buzzerPin, OUTPUT);
-  
-  // Initialize buzzer as OFF
-  digitalWrite(buzzerPin, LOW);
-  
-  // Begin serial communication (optional for debugging)
-  Serial.begin(9600);
+    public void displayInputs() {
+        System.out.println("Number 1: " + number1 + ", Number 2: " + number2);
+    }
 }
 
-void loop() {
-  // Measure distance
-  long duration;
-  float distanceCm;
+class AddingBinaryNumbers extends AddingNumbers {
+    public AddingBinaryNumbers(int number1, int number2) {
+        super(number1, number2);
+    }
 
-  // Trigger the ultrasonic sensor
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  // Read the echo time
-  duration = pulseIn(echoPin, HIGH);
-
-  // Calculate distance in cm
-  distanceCm = duration * 0.034 / 2;
-
-  // Display distance on LCD
-  lcd.setCursor(0, 1);  // Move to the second line
-  lcd.print(distanceCm);
-  lcd.print(" cm   ");  // Spaces to clear residual characters
-
-  // Check distance and control buzzer
-  if (distanceCm > 100) {
-    digitalWrite(buzzerPin, HIGH);  // Turn on the buzzer
-  } else {
-    digitalWrite(buzzerPin, LOW);   // Turn off the buzzer
-  }
-
-  // Optional: Print distance to Serial Monitor
-  Serial.print("Distance: ");
-  Serial.print(distanceCm);
-  Serial.println(" cm");
-
-  delay(500);  // Short delay for stability
+    public String addBinary() {
+        int sum = number1 + number2;
+        return Integer.toBinaryString(sum);
+    }
 }
+
+class AddingDecimalNumbers extends AddingNumbers {
+    public AddingDecimalNumbers(int number1, int number2) {
+        super(number1, number2);
+    }
+
+    public int addDecimal() {
+        return number1 + number2;
+    }
+}
+
+class MyEntry {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Input for AddingBinaryNumbers
+        System.out.print("Enter first binary number: ");
+        int binary1 = Integer.parseInt(scanner.nextLine(), 2);
+        System.out.print("Enter second binary number: ");
+        int binary2 = Integer.parseInt(scanner.nextLine(), 2);
+
+        AddingBinaryNumbers binaryNumbers = new AddingBinaryNumbers(binary1, binary2);
+        binaryNumbers.displayInputs();
+        System.out.println("Binary Sum: " + binaryNumbers.addBinary());
+
+        // Input for AddingDecimalNumbers
+        System.out.print("Enter first decimal number: ");
+        int decimal1 = scanner.nextInt();
+        System.out.print("Enter second decimal number: ");
+        int decimal2 = scanner.nextInt();
+
+        AddingDecimalNumbers decimalNumbers = new AddingDecimalNumbers(decimal1, decimal2);
+        decimalNumbers.displayInputs();
+        System.out.println("Decimal Sum: " + decimalNumbers.addDecimal());
+
+        scanner.close();
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------------------------
+Fun Game Program
+Save name ---->FunGame.java
+
+
+import java.util.Scanner;
+
+public class FunGame {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("*** Welcome to explore with Fun Game ***");
+        System.out.println("SELECT FROM THE MAIN MENU");
+        System.out.println("1. Print Hollow Mirrored Rhombus");
+        System.out.println("2. Reverse Your Name");
+        System.out.println("3. Find Vowels in Your Name");
+        System.out.println("4. Reverse a Number");
+        System.out.println("5. Reverse an Array");
+        System.out.println("6. GCD of Two Numbers");
+        System.out.print("Enter your choice (1-6): ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline
+
+        switch (choice) {
+            case 1:
+                System.out.print("Enter number of rows: ");
+                int rows = scanner.nextInt();
+                System.out.print("Enter a symbol: ");
+                char symbol = scanner.next().charAt(0);
+                printHollowRhombus(rows, symbol);
+                break;
+
+            case 2:
+                System.out.print("Enter a String: ");
+                String inputString = scanner.nextLine();
+                System.out.println("The reverse of the input String is: " + reverseString(inputString));
+                break;
+
+            case 3:
+                System.out.print("Enter your Name: ");
+                String name = scanner.nextLine();
+                System.out.println("The vowels available in your name are: " + findVowels(name));
+                break;
+
+            case 4:
+                System.out.print("Enter a Number: ");
+                String number = scanner.nextLine();
+                if (isValidNumber(number)) {
+                    System.out.println("The reverse of your number is: " + reverseString(number));
+                } else {
+                    System.out.println("Invalid input! Please enter a valid number.");
+                }
+                break;
+
+            case 5:
+                System.out.print("Enter the size of the array: ");
+                int size = scanner.nextInt();
+                int[] array = new int[size];
+                System.out.println("Enter " + size + " values for the array:");
+                for (int i = 0; i < size; i++) {
+                    array[i] = scanner.nextInt();
+                }
+                System.out.print("The reversed array is: ");
+                reverseArray(array);
+                break;
+
+            case 6:
+                System.out.print("Enter the first number: ");
+                int num1 = scanner.nextInt();
+                System.out.print("Enter the second number: ");
+                int num2 = scanner.nextInt();
+                System.out.println("The GCD of " + num1 + " and " + num2 + " is: " + gcd(num1, num2));
+                break;
+
+            default:
+                System.out.println("Option not yet implemented or invalid choice!");
+        }
+
+        scanner.close();
+    }
+
+    public static void printHollowRhombus(int rows, char symbol) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < rows - i - 1; j++) {
+                System.out.print(" ");
+            }
+            for (int j = 0; j < rows; j++) {
+                if (i == 0 || i == rows - 1 || j == 0 || j == rows - 1) {
+                    System.out.print(symbol);
+                } else {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public static String reverseString(String input) {
+        StringBuilder reversed = new StringBuilder(input);
+        return reversed.reverse().toString();
+    }
+
+    public static String findVowels(String input) {
+        StringBuilder vowels = new StringBuilder();
+        for (char c : input.toLowerCase().toCharArray()) {
+            if ("aeiou".indexOf(c) != -1) {
+                vowels.append(c).append(", ");
+            }
+        }
+        return vowels.length() > 0 ? vowels.substring(0, vowels.length() - 2) : "No vowels found";
+    }
+
+    public static boolean isValidNumber(String input) {
+        return input.matches("\\d+"); // Check if the input contains only digits
+    }
+
+    public static void reverseArray(int[] array) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            System.out.print(array[i] + " ");
+        }
+        System.out.println();
+    }
+
+    public static int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
+
+
+
+
+------------------------------------------------------------------------------------------------------------------
+GUI ---> increment and decrement program
+save name ---> CounterApp.java
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CounterApp {
+    public static void main(String[] args) {
+        // Create a counter variable
+        final int[] count = {0};
+
+        // Create JFrame and components
+        JFrame frame = new JFrame("Counter");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 150);
+
+        // Create JLabel for displaying the counter
+        JLabel counterLabel = new JLabel("0");
+
+        // Create buttons for increment and decrement
+        JButton incrementButton = new JButton("Increment");
+        JButton decrementButton = new JButton("Decrement");
+
+        // ActionListener for increment button
+        incrementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                count[0]++; // Increment counter
+                counterLabel.setText(String.valueOf(count[0])); // Update label
+            }
+        });
+
+        // ActionListener for decrement button
+        decrementButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                count[0]--; // Decrement counter
+                counterLabel.setText(String.valueOf(count[0])); // Update label
+            }
+        });
+
+        // Add components to the frame
+        frame.add(counterLabel);
+        frame.add(incrementButton);
+        frame.add(decrementButton);
+
+        // Set layout and bounds for manual positioning
+        frame.setLayout(null); // Use null layout for manual positioning
+        counterLabel.setBounds(150, 30, 100, 30);
+        incrementButton.setBounds(50, 80, 100, 30);
+        decrementButton.setBounds(150, 80, 100, 30);
+
+        // Make the frame visible
+        frame.setVisible(true);
+    }
+}
+
+
+----------------------------------------------------------------------------------------------------------------
+Hello World GUI
+save name ---> GuiExample.java
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class GuiExample {
+    public static void main(String[] args) {
+        // Create a new JFrame
+        JFrame frame = new JFrame("Welcome");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Create a label and add it to the frame
+        JLabel label = new JLabel("Hello World!");
+        frame.add(label);
+
+        // Set the layout to null for absolute positioning
+        frame.setLayout(null);
+
+        // Create a button
+        JButton button = new JButton("Click Me");
+        
+        // Add an action listener to the button
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                label.setText("Button clicked!"); // Change the text of the label when button is clicked
+            }
+        });
+
+        // Add the button to the frame
+        frame.add(button);
+
+        // Set bounds (position and size) for the label and button
+        label.setBounds(100, 50, 200, 30);
+        button.setBounds(80, 100, 100, 30);
+
+        // Make the frame visible
+        frame.setVisible(true);
+    }
+}
+
