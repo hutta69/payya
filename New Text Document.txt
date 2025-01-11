@@ -1,3 +1,5 @@
+Remove-Item "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+ 
 ---------------------react---------------------------
 npm create vite@latest
 
