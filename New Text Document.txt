@@ -1,1073 +1,182 @@
-####CALCULETOR#
-package com.example.kuppi1;
+---------------------react---------------------------
+npm create vite@latest
 
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-
-    EditText editText1,editText2;
-    RadioButton add,sub,div,mul;
-    Button button;
-    TextView textView;
+----------------------laravel------------------------
+composer create-project laravel/laravel thename
 
 
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        editText1 = (EditText) findViewById(R.id.value1);
-        editText2 =(EditText) findViewById(R.id.value2);
-        add = (RadioButton) findViewById(R.id.adition);
-        sub = (RadioButton) findViewById(R.id.substraction);
-        div = (RadioButton) findViewById(R.id.divition);
-        mul = (RadioButton) findViewById(R.id.multification);
-        button = (Button) findViewById(R.id.button);
-        textView = (TextView) findViewById(R.id.display);
+make a controller name = UserController
+php artisan make:controller UserController
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String data1 =editText1.getText().toString();
-                String data2 = editText2.getText().toString();
+use App\Http\Controllers\UserController; in web.php
 
-                if(data1.isEmpty() || data2.isEmpty()){
-                    Toast.makeText(MainActivity.this, "Values are Empty Please Check", Toast.LENGTH_SHORT).show();
-                }else {
-                    Integer num1= Integer.valueOf(data1);
-                    Integer num2= Integer.valueOf(data2);
+<?php
 
-                    if (add.isChecked()){
-                        Integer addOutput = num1+num2;
-                        String convertedadd= String.valueOf(addOutput);
-                        textView.setText(convertedadd);
-                    } else if (sub.isChecked()) {
-                        Integer subOutput=num1-num2;
-                        String convertedsub= String.valueOf(subOutput);
-                        textView.setText(convertedsub);
+namespace App\Http\Controllers;
 
-                    }else if (div.isChecked()) {
-                        Integer divOutput = num1 / num2;
-                        String converteddvi = String.valueOf(divOutput);
-                        textView.setText(converteddvi);
+use Illuminate\Http\Request;
 
-                    }else if (mul.isChecked()) {
-                        Integer mulOutput = num1 * num2;
-                        String convertedmul = String.valueOf(mulOutput);
-                        textView.setText(convertedmul);
-                    }
+class UserController extends Controller
+{
+    public function registration()
+    {
+        return view('registration');
+    }
 
-
-                }
-
-
-            }
-        });
-
-
-
-
-
+    public function login()
+    {
+        return view('login');
     }
 }
-#########
-##### Go page to page data send####
-main Acti
-package com.example.kuppi1;
 
-import androidx.appcompat.app.AppCompatActivity;
+**Model**
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
+to make model = php artisan make:model modelname
 
-public class MainActivity extends AppCompatActivity {
+<?php
 
-    EditText editText1,editText2,editText3;
-    Button button;
+namespace App\Models;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-        editText1=(EditText) findViewById(R.id.id1);
-        editText2=(EditText) findViewById(R.id.id2);
-        editText3=(EditText) findViewById(R.id.id3);
-        button = (Button) findViewById(R.id.button);
+class register extends Model
+{
+    use HasFactory;
 
+    protected $fillable =[
 
+        'user_id',
+        'name',
+        'email',
+        'password',
+        'email_verified_at',
+        'password',
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String data1 = editText1.getText().toString();
-                String data2 = editText2.getText().toString();
-                String data3 = editText3.getText().toString();
-
-                if(data1.equals("android") && data3.equals("android")){
-
-                    Intent intent = new Intent(MainActivity.this,Profile_Activity.class);
-
-                    intent.putExtra("Username",data1);
-                    intent.putExtra("Email",data2);
-
-                    startActivity(intent);
-
-
-
-
-
-                }else{
-                    Toast.makeText(MainActivity.this, "Not Matched", Toast.LENGTH_SHORT).show();
-
-                }
-
-
-
-
-
-
-            }
-        });
-
-
-    }
+    ];
 }
-.........
-profile act
-package com.example.kuppi1;
 
-import androidx.appcompat.app.AppCompatActivity;
+4.149.240.2
 
-import android.os.Bundle;
-import android.widget.TextView;
+---------php---------------
 
-public class Profile_Activity extends AppCompatActivity {
-    TextView textView1,textView2;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+    <!-- program path ---------------->
+<script>
+    function validateform(){
+        var name = document.forms["myform"]["firstname"].value;
+        var email = document.forms["myform"]["email"].value;
+        var nic = document.forms["myform"]["nic"].value;
+        var tel = document.forms["myform"]["tel"].value;
+        var pass = document.forms["myform"]["pass"].value;
+        var repass = document.forms["myform"]["repass"].value;
+       document.getElementById("error").style.color = "red";
 
-       textView1 = (TextView) findViewById(R.id.display1);
-       textView2 = (TextView) findViewById(R.id.display2);
-
-       Bundle bundle= getIntent().getExtras();
-
-       if(bundle != null){
-           String name = bundle.getString("Username");
-           textView1.setText(name);
-           String email = bundle.getString("Email");
-           textView2.setText(email);
-
+        if(name == "" | email == "" | nic =="" | tel == "" | pass == "" | repass == ""){
+            document.getElementById('error').innerHTML = "required fields are must be fielled out";
+            return false;
+        } 
+        else if(name.length > 20){
+            document.getElementById('errname').innerHTML = "name must be no more than 20 Letters";
+            return false;
 
         }
+        else if(pass.length >= 8){
+            document.getElementById('errpass').innerHTML = "Password must contain min 8 chars cant enter more than 8";
+            return false;
 
-
-    }
-}
-#########
-Bduwa
-//color change
-private Button bckBtn;
- private Button txtBtn;
- private TextView result;
- private View windowView;
- private int[] colors;
- @Override
- protected void onCreate(Bundle savedInstanceState) {
- super.onCreate(savedInstanceState);
- setContentView(R.layout.activity_main);
- colors = new int[]{Color.RED, Color.YELLOW, Color.GRAY, 
-Color.MAGENTA, Color.BLACK, Color.BLUE, Color.TRANSPARENT, Color.DKGRAY};
- windowView = findViewById(R.id.bckViewId);
- bckBtn = (Button) findViewById(R.id.bckBtnId);
- txtBtn = (Button) findViewById(R.id.txtBtnId);
- result = (TextView) findViewById(R.id.textId);
- bckBtn.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- Random random = new Random();
- int ranNum = random.nextInt(colors.length);
- windowView.setBackgroundColor(colors[ranNum]);
- }
- });
- txtBtn.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- Random randomTxt = new Random();
- int ranTxtColor = randomTxt.nextInt(colors.length);
- result.setTextColor(colors[ranTxtColor]);
- }
- });
- }
-
-
-
-
-
-//aler box
-username = (EditText) findViewById(R.id.usnTxtviewId);
- password = (EditText) findViewById(R.id.pswTxtviewId);
- submitTxt = (Button) findViewById(R.id.buttonId);
- //resultTxt = (TextView) findViewById(R.id.outTxtviewId);
- reset = (Button) findViewById(R.id.resetBtnId);
- AlertDialog.Builder builder = new 
-AlertDialog.Builder(MainActivity.this);
- submitTxt.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- if (username.getText().toString().equals("kamal") && 
-password.getText().toString().equals("kamal123")){
- //resultTxt.setText("Matched!");
- builder.setMessage("UserName and Password is Correct! 
-Your are signed in..");
- // Set Cancelable false for when the user clicks on the 
-outside the Dialog Box then it will remain show
- builder.setCancelable(false);
- // Set the Negative button with No name Lambda 
-OnClickListener method is use of DialogInterface interface.
- builder.setNegativeButton("Ok", 
-(DialogInterface.OnClickListener) (dialog, which) -> {
- // If user click no then dialog box is canceled.
-dialog.cancel();
- });
- // Create the Alert dialog
-AlertDialog alertDialog = builder.create();
- // Show the Alert Dialog box
-alertDialog.show();
- }
- else {
- //resultTxt.setText(("Not Matched"));
- builder.setMessage("Username and Password is Incorrect! 
-Please try again..");
- // Set Cancelable false for when the user clicks on the 
-outside the Dialog Box then it will remain show
- builder.setCancelable(false);
- // Set the Negative button with No name Lambda 
-OnClickListener method is use of DialogInterface interface.
- builder.setNegativeButton("Ok", 
-(DialogInterface.OnClickListener) (dialog, which) -> {
- // If user click no then dialog box is canceled.
-dialog.cancel();
- });
- // Create the Alert dialog
-AlertDialog alertDialog = builder.create();
- // Show the Alert Dialog box
-alertDialog.show();
- }
- }
- });
- reset.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View v) {
- username.setText("");
- password.setText("");
- }
- });
-
-
-
-
-
-//cal
-add = (Button) findViewById(R.id.addBtnId);
- sub = (Button) findViewById(R.id.sbtBtnId);
- div = (Button) findViewById(R.id.dvdBtnId);
- mul = (Button) findViewById(R.id.mulBtnId);
- value1 = (EditText) findViewById(R.id.val1Id);
- value2 = (EditText) findViewById(R.id.val2Id);
- output = (TextView) findViewById(R.id.outputId);
- reset = (Button) findViewById(R.id.rstBtnId);
- add.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- int n1 = Integer.parseInt(value1.getText().toString());
- int n2 = Integer.parseInt(value2.getText().toString());
- int result = n1+n2;
- output.setText(n1+" + "+n2+" = "+result);
- }
- });
- sub.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- int n1 = Integer.parseInt(value1.getText().toString());
- int n2 = Integer.parseInt(value2.getText().toString());
- int result = n1-n2;
- output.setText(n1+" - "+n2+" = "+result);
- }
- });
- div.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- int n1 = Integer.parseInt(value1.getText().toString());
- int n2 = Integer.parseInt(value2.getText().toString());
- int result = n1/n2;
- output.setText(n1+" / "+n2+" = "+result);
- }
- });
- mul.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- int n1 = Integer.parseInt(value1.getText().toString());
- int n2 = Integer.parseInt(value2.getText().toString());
- int result = n1*n2;
- output.setText(n1+" * "+n2+" = "+result);
- }
- });
- reset.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View v) {
- value1.setText("");
- value2.setText("");
- output.setText("");
- }
- });
-
-
-
-//cal-2 opertor first
-add = (Button) findViewById(R.id.addBtnId);
- sub = (Button) findViewById(R.id.sbtBtnId);
- div = (Button) findViewById(R.id.dvdBtnId);
- mul = (Button) findViewById(R.id.mulBtnId);
- equal = (Button) findViewById(R.id.eqlBtnId);
- value1 = (EditText) findViewById(R.id.val1Id);
- value2 = (EditText) findViewById(R.id.val2Id);
- operator = (TextView) findViewById(R.id.operaterId);
- output = (TextView) findViewById(R.id.outputId);
- label01 = (TextView) findViewById(R.id.label1Id);
- label02 = (TextView) findViewById(R.id.label2Id);
- reset = (Button) findViewById(R.id.rstBtnId);
- add.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- operator.setText("+");
- label01.setText("");
- label02.setText("Enter two values to calculate");
- equal.setOnClickListener(new View.OnClickListener() {
- @Override
-public void onClick(View v) {
- int n1 = 
-Integer.parseInt(value1.getText().toString());
- int n2 = 
-Integer.parseInt(value2.getText().toString());
- int result = n1+n2;
-output.setText(n1+" + "+n2+" = "+result);
- }
- });
- }
- });
- sub.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- operator.setText("-");
- label01.setText("");
- label02.setText("Enter two values to calculate");
- equal.setOnClickListener(new View.OnClickListener() {
- @Override
-public void onClick(View v) {
- int n1 = 
-Integer.parseInt(value1.getText().toString());
- int n2 = 
-Integer.parseInt(value2.getText().toString());
- int result = n1-n2;
- output.setText(n1+" - "+n2+" = "+result);
- }
- });
- }
- });
- div.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- operator.setText("/");
- label01.setText("");
- label02.setText("Enter two values to calculate");
- equal.setOnClickListener(new View.OnClickListener() {
- @Override
-public void onClick(View v) {
- int n1 = 
-Integer.parseInt(value1.getText().toString());
- int n2 = 
-Integer.parseInt(value2.getText().toString());
- int result = n1/n2;
-output.setText(n1+" / "+n2+" = "+result);
- }
- });
- }
- });
- mul.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- operator.setText("*");
- label01.setText("");
- label02.setText("Enter two values to calculate");
- equal.setOnClickListener(new View.OnClickListener() {
- @Override
-public void onClick(View v) {
- int n1 = 
-Integer.parseInt(value1.getText().toString());
- int n2 = 
-Integer.parseInt(value2.getText().toString());
- int result = n1*n2;
-output.setText(n1+" * "+n2+" = "+result);
- }
- });
- }
- });
- reset.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View v) {
- value1.setText("");
- value2.setText("");
- operator.setText("");
- output.setText("");
- label02.setText("");
- label01.setText("First, Enter the operation you want");
- }
- });
-
-
-//seekbar
-private SeekBar seekBar;
- private TextView result;
- @Override
- protected void onCreate(Bundle savedInstanceState) {
- super.onCreate(savedInstanceState);
- setContentView(R.layout.activity_main);
- seekBar = (SeekBar) findViewById(R.id.seekBarId);
- result = (TextView) findViewById(R.id.resultViewId);
- seekBar.setOnSeekBarChangeListener(new 
-SeekBar.OnSeekBarChangeListener() {
- @Override
- public void onProgressChanged(SeekBar seekBar, int progress, 
-boolean fromUser) {
- result.setText("Marks: " + seekBar.getProgress());
- result.setVisibility(View.VISIBLE);
- }
- @Override
- public void onStartTrackingTouch(SeekBar seekBar) {
- }
- @Override
- public void onStopTrackingTouch(SeekBar seekBar) {
- }
- });
-
-
-
-
-//seekbar  discount
-result = (TextView) findViewById(R.id.resultId);
- amount = (EditText) findViewById(R.id.amountId);
- seekBar = (SeekBar) findViewById(R.id.seekBarId);
- discount = (TextView) findViewById(R.id.discountId);
- seekBar.setOnSeekBarChangeListener(new 
-SeekBar.OnSeekBarChangeListener() {
- @Override
- public void onProgressChanged(SeekBar seekBar, int progress, 
-boolean fromUser) {
- discount.setText(seekBar.getProgress() + "%");
- Double userInput = 
-Double.parseDouble(amount.getText().toString());
- Double val = userInput -
-((userInput*seekBar.getProgress())/100);
- result.setText(Double.toString(val));
- if(seekBar.getProgress() > 75){
- discount.setTextColor(Color.RED);
- discount.setText("75%");
- Double val1 = userInput - ((userInput*75)/100);
- result.setText("" + val1);
- }
- else{
- discount.setTextColor(Color.BLACK);
- }
- }
- @Override
- public void onStartTrackingTouch(SeekBar seekBar) {
- }
- @Override
- public void onStopTrackingTouch(SeekBar seekBar) {
- }
- });
-
-
-
-//discount 2 seekbar
-
-name = (EditText) findViewById(R.id.nameId);
- age = (EditText) findViewById(R.id.ageId);
- amount = (EditText) findViewById(R.id.amountId);
- checkBox = (CheckBox) findViewById(R.id.checkBoxId);
- seekBar = (SeekBar) findViewById(R.id.seekBarId);
- button = (Button) findViewById(R.id.btnId);
- result = (TextView) findViewById(R.id.resultId);
- discountView = (TextView) findViewById(R.id.discounViewId);
- seniorJuniorView = (TextView) findViewById(R.id.SJViewId);
- button.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View view) {
- String nameInput = name.getText().toString();
- Integer ageIn = Integer.parseInt(age.getText().toString());
- Integer amountInput = 
-Integer.parseInt(amount.getText().toString());
- if(ageIn > 40){
- Integer val = amountInput - ((amountInput * 40)/100);
- result.setText(Integer.toString(val));
- discountView.setText("Discount : 40%");
- seniorJuniorView.setText("Senior Citizen");
- }else{
- Integer val = amountInput - ((amountInput * 25)/100);
- result.setText(Integer.toString(val));
- discountView.setText("Discount : 25%");
- seniorJuniorView.setText("Junior Citizen");
- }
- }
- });
- checkBox.setOnCheckedChangeListener(new 
-CompoundButton.OnCheckedChangeListener() {
- @Override
- public void onCheckedChanged(CompoundButton buttonView, boolean 
-isChecked) {
- if(isChecked) {
- seekBar.setVisibility(View.VISIBLE);
- }else{
- seekBar.setVisibility(View.INVISIBLE);
- }
- seekBar.setOnSeekBarChangeListener(new 
-SeekBar.OnSeekBarChangeListener() {
- @Override
-public void onProgressChanged(SeekBar seekBar, int 
-progress, boolean fromUser) {
- Double input = 
-Double.parseDouble(amount.getText().toString());
- if(input > 40){
- discountView.setText("Discount : 
-"+seekBar.getProgress()+"%");
- Double val = input -
-((input*seekBar.getProgress())/100);
- //seekBar.setProgress(40);
-result.setText(Double.toString(val));
- seniorJuniorView.setText("");
- }else{
- discountView.setText("Discount : 
-"+seekBar.getProgress()+"%");
- //seekBar.setProgress(25);
-Double val = input -
-((input*seekBar.getProgress())/100);
- result.setText(Double.toString(val));
- seniorJuniorView.setText("");
- }
- }
- @Override
-public void onStartTrackingTouch(SeekBar seekBar) {
- }
- @Override
-public void onStopTrackingTouch(SeekBar seekBar) {
- }
- });
- }
- });
-
-
-//data show in form
-fname = (EditText) findViewById(R.id.fnameId);
- lname = (EditText) findViewById(R.id.lnameId);
- age = (EditText) findViewById(R.id.ageId);
- uname = (EditText) findViewById(R.id.unameId);
- password = (EditText) findViewById(R.id.passwordId);
- email = (EditText) findViewById(R.id.emailId);
- registerBtn = (Button) findViewById(R.id.regBtnId);
- result01 = (TextView) findViewById(R.id.result1);
- result02 = (TextView) findViewById(R.id.result2);
- result03 = (TextView) findViewById(R.id.result3);
- result04 = (TextView) findViewById(R.id.result4);
- result05 = (TextView) findViewById(R.id.result5);
- result06 = (TextView) findViewById(R.id.result6);
- registerBtn.setOnClickListener(new View.OnClickListener() {
- @Override
- public void onClick(View v) {
- String inputFname = fname.getText().toString();
- String inputLname = lname.getText().toString();
- String inputAge = age.getText().toString();
- String inputUname = uname.getText().toString();
- String inputpass = password.getText().toString();
- String inputEmail = email.getText().toString();
- result01.setText("Firstname: "+inputFname);
- result02.setText("Lastname: "+inputLname);
- result03.setText("Age: "+inputAge);
- result03.setText("Username: "+inputUname);
- result04.setText("Password: "+inputpass);
- result05.setText("Email: "+inputEmail);
- }
- });
-
-.......
-jjjjjj
-.....
-package com.example.test19;
-
-import static android.content.ContentValues.TAG;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
-
-public class MainActivity extends AppCompatActivity {
-
-    private EditText fname, lname;
-    private Button send, read;
-    private TextView result;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        fname = (EditText) findViewById(R.id.fnameId);
-        lname = (EditText) findViewById(R.id.lnameId);
-        send = (Button) findViewById(R.id.btn);
-        read = (Button) findViewById(R.id.readbtn);
-        result = (TextView) findViewById(R.id.resultId);
-
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String fnameVal = fname.getText().toString();
-                String lnameVal = lname.getText().toString();
-
-                // Create a new user with a first and last name
-                Map<String, Object> user = new HashMap<>();
-                user.put("first", fnameVal);
-                user.put("last", lnameVal);
-
-// Add a new document with a generated ID
-                db.collection("users")
-                        .add(user)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MainActivity.this, "Fail", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-
-
+        }
+       else if(pass != repass){
+            document.getElementById('errrepass').innerHTML = "password is not same plese check the password again";
+            return false;
+        }
+        }
+            function passmatch(){
+                var pass = document.forms["myform"]["pass"].value;
+                var repass = document.forms["myform"]["repass"].value;
+                if(pass == repass){
+                    
+                    document.getElementById("errrepass").innerHTML = "password is matching!";
+					document.getElementById("errrepass").style.color="green";
+                }else{
+                    
+                    document.getElementById("errrepass").innerHTML = "password is not matching!";
+					document.getElementById("errrepass").style.color="red";
             }
-        });
+         
+
+     }
+
+</script>
+
+</head>
+<body>
+
+<!-- design----------------------------->
+
+    <div style="width: 500px; height:auto; padding:30px; background:#10101010; margin: 30px auto;">
+    <div id="error"></div>
+
+    <form action="connect.php" method="POST" name="myform" onsubmit="return validateform()" >
+    
+        <p>Name     : <input type = "text" id="firstname" name="firstname" title="Only string and spaces and no more 20 charcters allowed"  ><span id="errname"></span></p>
+        <p>Email    : <input type = "email" id="email" name="email" ><span id="errrepassmail"></span></p>
+        <p>NIC No   : <input type = "text" id="nic" name="nic" pattern="[a-zA-Z0-9]{10,12}" title="only numbers and string allowed"></p>
+        <p>Telephone No: <input type = "text" id="tel" name="tel" pattern="[0-9]{10}" title="numbers are allowed" ></p>
+        <p>password: <input type = "password" id="pass" name="pass"  ><span id="errpass"></span></p>
+        <p>Re Enter Password: <input type = "password" id="repass" name="repass" onkeyup="passmatch()"><span id="errrepass"></span></p>
+        <p><input type="submit" name="submit" id="submit"></p>
+
+    </form>
+    </div>
+</body>
+</html>
+/*  <?php 
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+        $dbname = "formexplain";
+
+    
+        $firstname = $_POST['firstname'];
+        $email = $_POST['email'];
+        $nic = $_POST['nic'];
+        $tel = $_POST['tel'];
+        $pass = $_POST['pass'];
 
 
+    //database connect
 
+    $conn = new mysqli('localhost','root','','formexplain');
+    if($conn->connect_error){
+    //if error
+        die('connection failed : '.$conn->connection_error);
 
+    }else{
+        $stmt = $conn->prepare("insert into registration(firstname, email, nic, tel, pass) values(?,?,?,?,?)");
 
-        read.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                db.collection("users")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        //Log.d(TAG, document.getId() + " => " + document.getData());
-                                        String x = document.getString("first");
-                                        String y = document.getString("last");
-                                        result.setText(x+"  "+y);
-
-                                    }
-                                } else {
-                                    Log.w(TAG, "Error getting documents.", task.getException());
-                                }
-                            }
-                        });
-
-
-            }
-        });
-
-
-
-    }
-}
-
-
-
-------
-
-
-
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <EditText
-        android:id="@+id/regId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Registration"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        />
-
-    <EditText
-        android:id="@+id/nameId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Enter your name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/regId"/>
-
-    <EditText
-        android:id="@+id/emailId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Enter your Email"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/nameId"
-        />
-
-    <EditText
-        android:id="@+id/unId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Enter your Username"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/emailId"
-        />
-
-    <EditText
-        android:id="@+id/passId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Enter your Password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/unId"
-        />
-
-    <EditText
-        android:id="@+id/ageId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Age"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/passId"
-        android:layout_toLeftOf="@+id/cityId"
-        />
-    <EditText
-        android:id="@+id/cityId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="City"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/passId"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        />
-    <EditText
-        android:id="@+id/dobId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="DoB"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/passId"
-        android:layout_toRightOf="@+id/cityId"
-        />
-
-
-    <EditText
-        android:id="@+id/fullNameId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="25dp"
-        android:text="Full Name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/dobId"
-        android:layout_marginBottom="20dp"
-        />
-
-    <Button
-        android:id="@+id/regBtnId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_below="@+id/fullNameId"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="90dp"/>
-    <Button
-        android:id="@+id/logBtnId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:layout_below="@+id/fullNameId"
-        android:layout_toRightOf="@+id/regBtnId"/>
-
-
-</RelativeLayout>
-
-.............
-login page
-package com.example.loginpage;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import android.content.DialogInterface;
-import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-public class MainActivity extends AppCompatActivity {
-
-    private EditText username;
-    private EditText password;
-    private TextView resultTxt;
-    private Button submitTxt;
-    private Button reset;
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-        username = (EditText) findViewById(R.id.usnTxtviewId);
-        password = (EditText) findViewById(R.id.pswTxtviewId);
-        submitTxt = (Button) findViewById(R.id.buttonId);
-        //resultTxt = (TextView) findViewById(R.id.outTxtviewId);
-        reset = (Button) findViewById(R.id.resetBtnId);
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-
-
-        submitTxt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (username.getText().toString().equals("kamal") && password.getText().toString().equals("kamal123")){
-                    //resultTxt.setText("Matched!");
-
-                    builder.setMessage("UserName and Password is Correct!             Your are signed in..");
-
-                    // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
-                    builder.setCancelable(false);
-
-                    // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
-                    builder.setNegativeButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
-                        // If user click no then dialog box is canceled.
-                        dialog.cancel();
-                    });
-
-                    // Create the Alert dialog
-                    AlertDialog alertDialog = builder.create();
-                    // Show the Alert Dialog box
-                    alertDialog.show();
-
-                }
-
-            else {
-                    //resultTxt.setText(("Not Matched"));
-
-                    builder.setMessage("Username and Password is Incorrect!       Please try again..");
-
-                    // Set Cancelable false for when the user clicks on the outside the Dialog Box then it will remain show
-                    builder.setCancelable(false);
-
-                    // Set the Negative button with No name Lambda OnClickListener method is use of DialogInterface interface.
-                    builder.setNegativeButton("Ok", (DialogInterface.OnClickListener) (dialog, which) -> {
-                        // If user click no then dialog box is canceled.
-                        dialog.cancel();
-                    });
-
-                    // Create the Alert dialog
-                    AlertDialog alertDialog = builder.create();
-                    // Show the Alert Dialog box
-                    alertDialog.show();
-                }
-            }
-        });
-
-
-        reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                username.setText("");
-                password.setText("");
-            }
-        });
+        $stmt->bind_param("sssis",$firstname, $email, $nic, $tel, $pass);
+        $stmt->execute(); 
+        echo "Registeration Sucessfully...";
+        $stmt->close();
+        $conn->close();
 
     }
 
 
-}
 
-......... fragment1....
-package com.example.fragment03;
-
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
-
-
-public class fragment1 extends Fragment {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    private Button btn;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_fragment1, container,false);
-
-        btn = view.findViewById(R.id.btnId);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(), "Hello!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        return view;
-    }
-}
-
-...fagment 2
-package com.example.fragment03;
-
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-
-public class fragment2 extends Fragment {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment2, container, false);
-    }
-}
-.....fragment1 xml
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#AA3D3D"
-    tools:context=".fragment1">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="30sp"
-        android:text="Fragment 01" />
-
-    <Button
-        android:id="@+id/btnId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Goto other page!"
-        android:textSize="18dp"
-        android:layout_gravity="center"
-        />
-
-</FrameLayout>
-
-
-
+?>*/
 
 
 
