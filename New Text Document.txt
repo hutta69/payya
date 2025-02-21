@@ -1,397 +1,152 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+-----second.cc-----------
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MaterialApp(
-    home: AppHome(),
-  ));
-}
+how to run
+./waf --run scratch/second
 
-class AppHome extends StatefulWidget {
-  const AppHome({Key? key}) : super(key: key);
 
-  @override
-  State<AppHome> createState() => _AppHomeState();
-}
 
-class _AppHomeState extends State<AppHome> {
-  TextEditingController cityController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
+---code---
 
-  void sendFirebaseData() async {
-    if (cityController.text.isNotEmpty &&
-        ageController.text.isNotEmpty &&
-        nameController.text.isNotEmpty) {
-      Map<String, String> userDatabase = {
-        'City': cityController.text,
-        'Age': ageController.text,
-        'Name': nameController.text,
-      };
+/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation;
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-      try {
-        await FirebaseFirestore.instance.collection("users").add(userDatabase);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Data added successfully!")),
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: $e")),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please fill all fields")),
-      );
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/csma-module.h"
+#include "ns3/internet-module.h"
+#include "ns3/point-to-point-module.h"
+#include "ns3/applications-module.h"
+#include "ns3/ipv4-global-routing-helper.h"
+#include "ns3/netanim-module.h"
+
+// Default Network Topology
+//
+//       10.1.1.0
+// n0 -------------- n1   n2   n3   n4
+//    point-to-point  |    |    |    |
+//                    ================
+//                      LAN 10.1.2.0
+
+
+using namespace ns3;
+
+NS_LOG_COMPONENT_DEFINE ("SecondScriptExample");
+
+int 
+main (int argc, char *argv[])
+{
+  bool verbose = true;
+  uint32_t nCsma = 3;
+
+  CommandLine cmd;
+  cmd.AddValue ("nCsma", "Number of \"extra\" CSMA nodes/devices", nCsma);
+  cmd.AddValue ("verbose", "Tell echo applications to log if true", verbose);
+
+  cmd.Parse (argc,argv);
+
+  if (verbose)
+    {
+      LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
+      LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Signup Form"),
-        centerTitle: true,
-        backgroundColor: Colors.red,
-      ),
-      body: Container(
-        margin: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: cityController,
-              decoration: InputDecoration(labelText: "City"),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: ageController,
-              decoration: InputDecoration(labelText: "Age"),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: "Name"),
-            ),
-            SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: sendFirebaseData,
-              child: Text("Submit"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  nCsma = nCsma == 0 ? 1 : nCsma;
+
+  NodeContainer p2pNodes;
+  p2pNodes.Create (2);
+
+  NodeContainer csmaNodes;
+  csmaNodes.Add (p2pNodes.Get (1));
+  csmaNodes.Create (nCsma);
+
+  PointToPointHelper pointToPoint;
+  pointToPoint.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
+  pointToPoint.SetChannelAttribute ("Delay", StringValue ("3ms"));
+
+  NetDeviceContainer p2pDevices;
+  p2pDevices = pointToPoint.Install (p2pNodes);
+
+  CsmaHelper csma;
+  csma.SetChannelAttribute ("DataRate", StringValue ("275Mbps"));
+  csma.SetChannelAttribute ("Delay", TimeValue (NanoSeconds (500)));
+
+  NetDeviceContainer csmaDevices;
+  csmaDevices = csma.Install (csmaNodes);
+
+  InternetStackHelper stack;
+  stack.Install (p2pNodes.Get (0));
+  stack.Install (csmaNodes);
+
+  Ipv4AddressHelper address;
+  address.SetBase ("10.1.1.0", "255.255.255.0");
+  Ipv4InterfaceContainer p2pInterfaces;
+  p2pInterfaces = address.Assign (p2pDevices);
+
+  address.SetBase ("10.1.2.0", "255.255.255.0");
+  Ipv4InterfaceContainer csmaInterfaces;
+  csmaInterfaces = address.Assign (csmaDevices);
+
+  UdpEchoServerHelper echoServer (8080);
+
+  ApplicationContainer serverApps = echoServer.Install (csmaNodes.Get (2));
+  serverApps.Start (Seconds (1.0));
+  serverApps.Stop (Seconds (10.0));
+
+  UdpEchoClientHelper echoClient (csmaInterfaces.GetAddress (2), 8080);
+  echoClient.SetAttribute ("MaxPackets", UintegerValue (2));
+  echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
+  echoClient.SetAttribute ("PacketSize", UintegerValue (2048));
+
+  ApplicationContainer clientApps = echoClient.Install (p2pNodes.Get (0));
+  clientApps.Start (Seconds (2.0));
+  clientApps.Stop (Seconds (10.0));
+
+  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+
+  pointToPoint.EnablePcapAll ("second");
+  csma.EnablePcap ("csma", csmaDevices.Get (1), true);
+  csma.EnablePcap ("p2p", p2pDevices.Get (1), true);
+
+  AnimationInterface anim ("ICT209.xml");
+  anim.SetConstantPosition (p2pNodes.Get (0),10.0,10.0);
+  anim.SetConstantPosition (p2pNodes.Get (1),30.0,20.0);
+
+  anim.SetConstantPosition (csmaNodes.Get (1),80.0,30.0);
+  anim.SetConstantPosition (csmaNodes.Get (2),50.0,40.0);
+  anim.SetConstantPosition (csmaNodes.Get (3),20.0,50.0);
+
+  AsciiTraceHelper ascii;
+  pointToPoint.EnableAsciiAll (ascii.CreateFileStream ("p2p.tr"));
+  csma.EnableAsciiAll (ascii.CreateFileStream ("csma.tr"));
+
+
+  Simulator::Run ();
+  Simulator::Destroy ();
+  return 0;
 }
 
 
-----------------------------------------------------------------cal and other codes---------------------------------------------------------
-import 'package:flutter/material.dart';
+-------gnuplot-------
 
-void main() {
-  runApp(MaterialApp(
-    home:AppHome() ,
-  ));
-}
+how to run
+gnuplot #filename.plt
 
-class AppHome extends StatefulWidget {
-  const AppHome({super.key});
-
-  @override
-  State<AppHome> createState() => _AppHomeState();
-}
-
-class _AppHomeState extends State<AppHome> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Signup Form"),
-        centerTitle: true,
-        backgroundColor: Colors.red,
-      ),
-      body:AppBody() ,
-    );
-  }
-}
-
-class AppBody extends StatefulWidget {
-  const AppBody({super.key});
-
-  @override
-  State<AppBody> createState() => _AppBodyState();
-}
-
-class _AppBodyState extends State<AppBody> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            height: 70,
-            padding: EdgeInsets.all(20),
-            color: Colors.blue,
-            child: Row(
-              children: [
-                Text("City: "),
-                Text("Kandy"),
-              ],
-            ),
-          ),
-
-          SizedBox(height: 10,),
-
-          Container(
-            height: 70,
-            padding: EdgeInsets.all(20),
-            color: Colors.blue,
-            child: Row(
-              children: [
-                Text("Age: "),
-                Text("25"),
-              ],
-            ),
-          ),
-          SizedBox(height: 10,),
-
-          Container(
-            height: 70,
-            padding: EdgeInsets.all(20),
-            color: Colors.blue,
-            child: Row(
-              children: [
-                Text("Name: "),
-                Text("Kalinda"),
-              ],
-            ),
-          ),
-          SizedBox(height: 40,),
-          
-          FilledButton(onPressed: () {} , child: Text("Submit"))
-
-        ],
-      ),
-    );
-
-
-  }
-}
-
--------------------------------------------------------------------------------------------------------------------
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home:AppHome() ,
-  ));
-}
-
-class AppHome extends StatefulWidget {
-  const AppHome({super.key});
-
-  @override
-  State<AppHome> createState() => _AppHomeState();
-}
-
-class _AppHomeState extends State<AppHome> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("App1"),
-        backgroundColor: Colors.blue,
-      ),
-      body: AppBody(),
-    );
-  }
-}
-
-class AppBody extends StatefulWidget {
-  const AppBody({super.key});
-
-  @override
-  State<AppBody> createState() => _AppBodyState();
-}
-
-class _AppBodyState extends State<AppBody> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            height: 150,
-            padding: EdgeInsets.all(50),
-            color: Colors.red,
-            child: Row(
-              children: [
-                Text("Answer: "),
-                Text("10")
-              ],
-            ),
-          ),
-
-          SizedBox(height: 30,),
-
-          Container(
-            height: 150,
-            padding: EdgeInsets.all(50),
-            color: Colors.red,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Text("Number1: "),
-                    Text("10"),
-                  ],
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  children: [
-                    Text("Number2: "),
-                    Text("10"),
-                  ],
-                )
-              ],
-            ),
-            ),
-          SizedBox(height: 30,),
-
-          FilledButton(onPressed: () {} , child: Text("+")),
-
-
-
-        ],
-      ),
-    );
-  }
-}
-
---------------------------------------------------------------------------------------------
-import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MaterialApp(
-    home:AppHome() ,
-  ));
-}
-
-class AppHome extends StatefulWidget {
-  const AppHome({super.key});
-
-  @override
-  State<AppHome> createState() => _AppHomeState();
-}
-
-class _AppHomeState extends State<AppHome> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("App1"),
-        backgroundColor: Colors.blue,
-      ),
-      body: AppBody(),
-    );
-  }
-}
-
-class AppBody extends StatefulWidget {
-  const AppBody({super.key});
-
-
-
-
-
-
-  @override
-  State<AppBody> createState() => _AppBodyState();
-}
-
-class _AppBodyState extends State<AppBody> {
-
-
-  TextEditingController Num1Controller = TextEditingController();
-  TextEditingController Num2Controller = TextEditingController();
-
-  int add = 0;
-
-  void cal() {
-    int number1 = int.tryParse(Num1Controller.text) ?? 0;
-    int number2 = int.tryParse(Num2Controller.text) ?? 0;
-
-    setState(() {
-      add = number1+ number2;
-    });
-
-
-  }
-
-
-    @override
-    Widget build(BuildContext context) {
-      return Container(
-        margin: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              height: 150,
-              padding: EdgeInsets.all(50),
-              color: Colors.red,
-              child: Row(
-                children: [
-                  Text("Answer: "),
-                  Text("$add"),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 30,),
-
-            Container(
-              height: 250,
-              padding: EdgeInsets.all(50),
-              color: Colors.red,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text("Number1: "),
-                      Expanded(child: TextField(controller: Num1Controller,)),
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-                  Row(
-                    children: [
-
-                      Text("Number2: "),
-                      Expanded(child: TextField(controller: Num2Controller,)),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(height: 30,),
-
-            FilledButton(onPressed: cal, child: Text("+")),
-
-
-          ],
-        ),
-      );
-    }
-  }
-
-
-
+---code---
+set terminal pdf
+set output "SmartphoneAnalysis.pdf"
+set title "Smartphone Attributes"
+plot "smart.txt" using 2:4 with lines title "Battery Capacity vs Price"
+plot "smart.txt" using 3:4 with lines title "Screen size vs Price"
