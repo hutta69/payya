@@ -150,3 +150,48 @@ set output "SmartphoneAnalysis.pdf"
 set title "Smartphone Attributes"
 plot "smart.txt" using 2:4 with lines title "Battery Capacity vs Price"
 plot "smart.txt" using 3:4 with lines title "Screen size vs Price"
+
+gnuplot.........
+
+linechart pdf...
+set terminal pdf
+set output "test.pdf"
+set title "testing"
+set xlabel "line 1"
+set ylabel "line 2"
+
+plot "test.txt" using 1:2 with lines title "this is line chart"
+
+set terminal png size 600,400
+set output "data.png"
+set title "mydata"
+set xlabel "No of days "
+set ylabel "speed "
+plot "data.txt" using 1:2 with lines title "speed"
+
+Histogram..................
+
+set terminal png size 400,600
+set output "test.png"
+set title "historgram png"
+set boxwidth 0.4
+set style fill solid
+set xlabel "line 1"
+set ylabel "line 2"
+set grid ytics
+set xtics rotate by 0 font ",8" nomirror
+
+plot "test.txt" using 2:xtic(1) title "bar 1" with boxes ls rgb "red",\
+     "test.txt" using 3:xtic(1) title "bar 2" with boxes ls rgp "green"
+
+set terminal pdf
+set output "myhistogram.pdf"
+set title "AQI VALUES"
+set boxwidth 0.4
+set style fill solid
+set xlabel "city"
+set ylabel "AQI"
+set grid ytics
+set xtics rotate by 0 font ",8" nomirror
+plot "mydata.txt" using 2:xtic(1) title "aqi current" with boxes lc rgb "blue" ,\
+     "mydata.txt" using 3:xtic(1) title "aqi last " with boxes lc rgb "red"
