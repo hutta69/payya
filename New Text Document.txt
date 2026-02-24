@@ -1,197 +1,288 @@
------second.cc-----------
+Q1
 
-how to run
-./waf --run scratch/second
+import 'package:flutter/material.dart';
 
+void main() {
+  runApp(const MyApp());
+}
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
----code---
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Image.asset("assets/logo.png", height: 30, width: 30),
+          actions: [
+            Icon(Icons.notifications),
+            Image.asset("assets/logo.png", height: 30, width: 30),
+          ],
+        ),
+        body: MyBody(),
+        bottomNavigationBar: BottomNavigationBar(items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(icon: Icon(Icons.contact_mail),label: "Contact_Mail",),
+            BottomNavigationBarItem(icon: Icon(Icons.sports), label: "Sport"),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation;
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+class MyBody extends StatefulWidget {
+  const MyBody({super.key});
 
-#include "ns3/core-module.h"
-#include "ns3/network-module.h"
-#include "ns3/csma-module.h"
-#include "ns3/internet-module.h"
-#include "ns3/point-to-point-module.h"
-#include "ns3/applications-module.h"
-#include "ns3/ipv4-global-routing-helper.h"
-#include "ns3/netanim-module.h"
+  @override
+  State<MyBody> createState() => _MyBodyState();
+}
 
-// Default Network Topology
-//
-//       10.1.1.0
-// n0 -------------- n1   n2   n3   n4
-//    point-to-point  |    |    |    |
-//                    ================
-//                      LAN 10.1.2.0
+class _MyBodyState extends State<MyBody> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text("For you"),
+              Text("Top Charts"),
+              Text("Kids"),
+              Text("Premium"),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Container(width: 1000, height: 2, color: Colors.black),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
 
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 250,
+                width: 400,
+                child: Image.asset("assets/g.jpg"),
+              ),
+            ],
+          ),
 
-using namespace ns3;
+          SizedBox(height: 20),
 
-NS_LOG_COMPONENT_DEFINE ("SecondScriptExample");
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: const Color.fromARGB(179, 75, 72, 72),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Icon(Icons.flag), Text("Racing")],
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
 
-int 
-main (int argc, char *argv[])
-{
-  bool verbose = true;
-  uint32_t nCsma = 3;
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: const Color.fromARGB(179, 75, 72, 72),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Icon(Icons.flag), Text("Racing")],
+              ),
+            ),
+          ),
 
-  CommandLine cmd;
-  cmd.AddValue ("nCsma", "Number of \"extra\" CSMA nodes/devices", nCsma);
-  cmd.AddValue ("verbose", "Tell echo applications to log if true", verbose);
+          SizedBox(height: 20),
 
-  cmd.Parse (argc,argv);
-
-  if (verbose)
-    {
-      LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
-      LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
-    }
-
-  nCsma = nCsma == 0 ? 1 : nCsma;
-
-  NodeContainer p2pNodes;
-  p2pNodes.Create (2);
-
-  NodeContainer csmaNodes;
-  csmaNodes.Add (p2pNodes.Get (1));
-  csmaNodes.Create (nCsma);
-
-  PointToPointHelper pointToPoint;
-  pointToPoint.SetDeviceAttribute ("DataRate", StringValue ("10Mbps"));
-  pointToPoint.SetChannelAttribute ("Delay", StringValue ("3ms"));
-
-  NetDeviceContainer p2pDevices;
-  p2pDevices = pointToPoint.Install (p2pNodes);
-
-  CsmaHelper csma;
-  csma.SetChannelAttribute ("DataRate", StringValue ("275Mbps"));
-  csma.SetChannelAttribute ("Delay", TimeValue (NanoSeconds (500)));
-
-  NetDeviceContainer csmaDevices;
-  csmaDevices = csma.Install (csmaNodes);
-
-  InternetStackHelper stack;
-  stack.Install (p2pNodes.Get (0));
-  stack.Install (csmaNodes);
-
-  Ipv4AddressHelper address;
-  address.SetBase ("10.1.1.0", "255.255.255.0");
-  Ipv4InterfaceContainer p2pInterfaces;
-  p2pInterfaces = address.Assign (p2pDevices);
-
-  address.SetBase ("10.1.2.0", "255.255.255.0");
-  Ipv4InterfaceContainer csmaInterfaces;
-  csmaInterfaces = address.Assign (csmaDevices);
-
-  UdpEchoServerHelper echoServer (8080);
-
-  ApplicationContainer serverApps = echoServer.Install (csmaNodes.Get (2));
-  serverApps.Start (Seconds (1.0));
-  serverApps.Stop (Seconds (10.0));
-
-  UdpEchoClientHelper echoClient (csmaInterfaces.GetAddress (2), 8080);
-  echoClient.SetAttribute ("MaxPackets", UintegerValue (2));
-  echoClient.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
-  echoClient.SetAttribute ("PacketSize", UintegerValue (2048));
-
-  ApplicationContainer clientApps = echoClient.Install (p2pNodes.Get (0));
-  clientApps.Start (Seconds (2.0));
-  clientApps.Stop (Seconds (10.0));
-
-  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
-
-  pointToPoint.EnablePcapAll ("second");
-  csma.EnablePcap ("csma", csmaDevices.Get (1), true);
-  csma.EnablePcap ("p2p", p2pDevices.Get (1), true);
-
-  AnimationInterface anim ("ICT209.xml");
-  anim.SetConstantPosition (p2pNodes.Get (0),10.0,10.0);
-  anim.SetConstantPosition (p2pNodes.Get (1),30.0,20.0);
-
-  anim.SetConstantPosition (csmaNodes.Get (1),80.0,30.0);
-  anim.SetConstantPosition (csmaNodes.Get (2),50.0,40.0);
-  anim.SetConstantPosition (csmaNodes.Get (3),20.0,50.0);
-
-  AsciiTraceHelper ascii;
-  pointToPoint.EnableAsciiAll (ascii.CreateFileStream ("p2p.tr"));
-  csma.EnableAsciiAll (ascii.CreateFileStream ("csma.tr"));
-
-
-  Simulator::Run ();
-  Simulator::Destroy ();
-  return 0;
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: const Color.fromARGB(179, 75, 72, 72),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [Icon(Icons.flag), Text("Racing")],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 
--------gnuplot-------
+Q2
 
-how to run
-gnuplot #filename.plt
+import 'package:flutter/material.dart';
 
----code---
-set terminal pdf
-set output "SmartphoneAnalysis.pdf"
-set title "Smartphone Attributes"
-plot "smart.txt" using 2:4 with lines title "Battery Capacity vs Price"
-plot "smart.txt" using 3:4 with lines title "Screen size vs Price"
+void main() {
+  runApp(const MyApp());
+}
 
-gnuplot.........
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-linechart pdf...
-set terminal pdf
-set output "test.pdf"
-set title "testing"
-set xlabel "line 1"
-set ylabel "line 2"
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text("E-Bill Calculator")),
+        body: MyBody(),
+      ),
+    );
+  }
+}
 
-plot "test.txt" using 1:2 with lines title "this is line chart"
+class MyBody extends StatefulWidget {
+  const MyBody({super.key});
 
-set terminal png size 600,400
-set output "data.png"
-set title "mydata"
-set xlabel "No of days "
-set ylabel "speed "
-plot "data.txt" using 1:2 with lines title "speed"
+  @override
+  State<MyBody> createState() => _MyBodyState();
+}
 
-Histogram..................
+class _MyBodyState extends State<MyBody> {
+  TextEditingController namecont = TextEditingController();
+  TextEditingController Monthcont = TextEditingController();
+  TextEditingController AccCont = TextEditingController();
+  TextEditingController unitCont = TextEditingController();
+  TextEditingController phoneCont = TextEditingController();
 
-set terminal png size 400,600
-set output "test.png"
-set title "historgram png"
-set boxwidth 0.4
-set style fill solid
-set xlabel "line 1"
-set ylabel "line 2"
-set grid ytics
-set xtics rotate by 0 font ",8" nomirror
+  double totalBill = 0.0;
 
-plot "test.txt" using 2:xtic(1) title "bar 1" with boxes ls rgb "red",\
-     "test.txt" using 3:xtic(1) title "bar 2" with boxes ls rgp "green"
+  void calculateBill() {
+    setState(() {
+      int unit = int.parse(unitCont.text);
+      if (namecont.text.isEmpty ||
+          Monthcont.text.isEmpty ||
+          AccCont.text.isEmpty ||
+          unitCont.text.isEmpty ||
+          phoneCont.text.isEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("All Field Are Mendatary")));
+        return;
+      }
 
-set terminal pdf
-set output "myhistogram.pdf"
-set title "AQI VALUES"
-set boxwidth 0.4
-set style fill solid
-set xlabel "city"
-set ylabel "AQI"
-set grid ytics
-set xtics rotate by 0 font ",8" nomirror
-plot "mydata.txt" using 2:xtic(1) title "aqi current" with boxes lc rgb "blue" ,\
-     "mydata.txt" using 3:xtic(1) title "aqi last " with boxes lc rgb "red"
+      if (unit >= 0 && unit <= 30) {
+        totalBill = unit * 30 + 400;
+      } else if (unit >= 31 && unit <= 60) {
+        totalBill = unit * 37 + 550;
+      } else if (unit >= 61 && unit <= 90) {
+        totalBill = unit * 42 + 650;
+      } else if (unit >= 90 && unit <= 120) {
+        totalBill = unit * 50 + 1500;
+      } else if (unit >= 121 && unit <= 180) {
+        totalBill = unit * 75 + 1500;
+      } else {
+        totalBill = unit * 85 + 2000;
+      }
+    });
+  }
+
+  void clearAll() {
+    namecont.clear();
+    Monthcont.clear();
+    AccCont.clear();
+    unitCont.clear();
+    phoneCont.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  color: const Color.fromARGB(255, 91, 86, 86),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Hi ${namecont.text} , your ${Monthcont.text} month total bill is :",
+                      ),
+                      Text("Rs. ${totalBill}"),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
+            ),
+          ),
+          Container(
+            width: 500,
+            height: 500,
+            color: Colors.white70,
+            child: Column(
+              children: [
+                Text("Bill Details", style: TextStyle(fontSize: 24)),
+                TextField(
+                  controller: namecont,
+                  decoration: InputDecoration(
+                    labelText: "Name :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: Monthcont,
+                  decoration: InputDecoration(
+                    labelText: "Month :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: AccCont,
+                  decoration: InputDecoration(
+                    labelText: "Account Number :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: unitCont,
+                  decoration: InputDecoration(
+                    labelText: "Counsuming Unit :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: phoneCont,
+                  decoration: InputDecoration(
+                    labelText: "Phone  :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: calculateBill,
+                  child: Text("CalculateBill"),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(onPressed: clearAll, child: Text("ClearAll")),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
