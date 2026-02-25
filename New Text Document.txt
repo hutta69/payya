@@ -286,3 +286,511 @@ class _MyBodyState extends State<MyBody> {
     );
   }
 }
+
+
+
+-----------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+main.dart
+
+--------------------------------------------------------------------------
+
+import 'package:app03/view.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+Future<void> main() async {
+  await Supabase.initialize(
+    url: 'https://xylzsijnmtrwwpibvvpv.supabase.co',
+    anonKey: 'sb_publishable_hXpARs-mcaiBWxIkMI1S2Q_dl8u5nNp',
+  );
+  runApp(MyApp());
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text("Insert Data",
+            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+          ),
+        ),
+        body: Mybody(),
+      ),
+    );
+  }
+}
+class Mybody extends StatefulWidget {
+  const Mybody({super.key});
+
+  @override
+  State<Mybody> createState() => _MybodyState();
+}
+
+class _MybodyState extends State<Mybody> {
+  final TextEditingController fnamecontroller = TextEditingController();
+  final TextEditingController lnameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+
+  Future<void> insertdata() async{
+    if (fnamecontroller.text.isEmpty || lnameController.text.isEmpty || ageController.text.isEmpty) return;
+
+    await Supabase.instance.client.from('test2').insert({
+      'fname' : fnamecontroller.text,
+      'lname': lnameController.text,
+      'age': ageController.text,
+    });
+    fnamecontroller.clear();
+    lnameController.clear();
+    ageController.clear();
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfully Added")));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          TextField(
+            controller: fnamecontroller,
+            decoration: InputDecoration(
+              hintText: "First Name",
+              labelText: "Enter the Name",
+              border: OutlineInputBorder(
+              )
+            ),
+          ),
+          SizedBox(height:10,),
+          TextField(
+            controller: lnameController,
+            decoration: InputDecoration(
+              hintText: "Second Name",
+              labelText: "Enter the name",
+              border: OutlineInputBorder(),
+            ),
+          ),
+           SizedBox(height:10,),
+          TextField(
+            controller: ageController,
+            decoration: InputDecoration(
+              hintText: "Age",
+              labelText: "Enter the age",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 10,),
+          FilledButton(onPressed: insertdata,
+          child: Text("Inseert Data")),
+          SizedBox(height: 10,),
+          FilledButton(onPressed: (){
+            Navigator.push(context,
+             MaterialPageRoute(
+              builder: (context) => Viewdata(
+              ) ));
+          },
+           child: Text("View Data"))
+
+
+        ],
+      ),
+    );
+  }
+}
+        
+------------------------------------------------------------------------------
+
+update.dart
+
+------------------------------------------------------
+
+import 'package:app03/view.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+Future<void> main() async {
+  await Supabase.initialize(
+    url: 'https://xylzsijnmtrwwpibvvpv.supabase.co',
+    anonKey: 'sb_publishable_hXpARs-mcaiBWxIkMI1S2Q_dl8u5nNp',
+  );
+  runApp(MyApp());
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text("Insert Data",
+            style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+          ),
+        ),
+        body: Mybody(),
+      ),
+    );
+  }
+}
+class Mybody extends StatefulWidget {
+  const Mybody({super.key});
+
+  @override
+  State<Mybody> createState() => _MybodyState();
+}
+
+class _MybodyState extends State<Mybody> {
+  final TextEditingController fnamecontroller = TextEditingController();
+  final TextEditingController lnameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+
+  Future<void> insertdata() async{
+    if (fnamecontroller.text.isEmpty || lnameController.text.isEmpty || ageController.text.isEmpty) return;
+
+    await Supabase.instance.client.from('test2').insert({
+      'fname' : fnamecontroller.text,
+      'lname': lnameController.text,
+      'age': ageController.text,
+    });
+    fnamecontroller.clear();
+    lnameController.clear();
+    ageController.clear();
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Successfully Added")));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          TextField(
+            controller: fnamecontroller,
+            decoration: InputDecoration(
+              hintText: "First Name",
+              labelText: "Enter the Name",
+              border: OutlineInputBorder(
+              )
+            ),
+          ),
+          SizedBox(height:10,),
+          TextField(
+            controller: lnameController,
+            decoration: InputDecoration(
+              hintText: "Second Name",
+              labelText: "Enter the name",
+              border: OutlineInputBorder(),
+            ),
+          ),
+           SizedBox(height:10,),
+          TextField(
+            controller: ageController,
+            decoration: InputDecoration(
+              hintText: "Age",
+              labelText: "Enter the age",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 10,),
+          FilledButton(onPressed: insertdata,
+          child: Text("Inseert Data")),
+          SizedBox(height: 10,),
+          FilledButton(onPressed: (){
+            Navigator.push(context,
+             MaterialPageRoute(
+              builder: (context) => Viewdata(
+              ) ));
+          },
+           child: Text("View Data"))
+
+
+        ],
+      ),
+    );
+  }
+}
+        
+------------------------------------------------------------
+
+view.dart
+---------------------------------------------------------
+
+import 'package:app03/update.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class Viewdata extends StatefulWidget {
+  const Viewdata({super.key});
+
+  @override
+  State<Viewdata> createState() => _ViewdataState();
+}
+
+class _ViewdataState extends State<Viewdata> {
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+      appBar: AppBar(
+        title: Text("View Data"),
+        backgroundColor: Colors.amber,
+      ),
+      body: Viewbody() ,
+    );
+  }
+}
+class Viewbody extends StatefulWidget {
+  const Viewbody({super.key});
+
+  @override
+  State<Viewbody> createState() => _ViewbodyState();
+}
+
+class _ViewbodyState extends State<Viewbody> {
+  List data = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchdata();
+  }
+  Future<void> fetchdata() async {
+    final response = await Supabase.instance.client
+    .from('test2')
+    .select()
+    .order('id', ascending: false);
+
+    setState(() {
+      data = response;
+      isLoading = false;
+    });
+  }
+  Future<void>deletedata(int id) async {
+    await Supabase.instance.client.from('test2').delete().eq('id', id);
+    fetchdata();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading){
+      return Center(child: CircularProgressIndicator(),);
+    }
+    if (data.isEmpty){
+      return Center(child: Text("No data found"),);
+    }
+    return ListView.builder(
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return Card(
+          child: ListTile(
+            leading: Icon(Icons.person),
+            title: Text(data[index]['fname']),
+            subtitle: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(data[index]['lname']),
+                SizedBox(height: 10,),
+                Text(data[index]['age'].toString()),
+              ],
+            ),
+            
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(onPressed: (){
+                  Navigator.push(
+                    context,
+                     MaterialPageRoute(
+                      builder: (context)=> UpdateHome(
+                        id: data[index]['id'],
+                        fname: data[index]['fname'],
+                        lname: data[index]['lname'],
+                        age: data[index]['age']),),);
+                }, icon: Icon(Icons.edit)),
+
+                IconButton(onPressed: (){
+                  deletedata(data[index]['id']);
+                }, icon: Icon(Icons.delete))
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+-----------------------------------------------------------------
+
+
+
+cal
+
+------------------------
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text("E-Bill Calculator")),
+        body: MyBody(),
+      ),
+    );
+  }
+}
+
+class MyBody extends StatefulWidget {
+  const MyBody({super.key});
+
+  @override
+  State<MyBody> createState() => _MyBodyState();
+}
+
+class _MyBodyState extends State<MyBody> {
+  TextEditingController namecont = TextEditingController();
+  TextEditingController Monthcont = TextEditingController();
+  TextEditingController AccCont = TextEditingController();
+  TextEditingController unitCont = TextEditingController();
+  TextEditingController phoneCont = TextEditingController();
+
+  double totalBill = 0.0;
+
+  void calculateBill() {
+    setState(() {
+      int unit = int.parse(unitCont.text);
+      if (namecont.text.isEmpty ||
+          Monthcont.text.isEmpty ||
+          AccCont.text.isEmpty ||
+          unitCont.text.isEmpty ||
+          phoneCont.text.isEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("All Field Are Mendatary")));
+        return;
+      }
+
+      if (unit >= 0 && unit <= 30) {
+        totalBill = unit * 30 + 400;
+      } else if (unit >= 31 && unit <= 60) {
+        totalBill = unit * 37 + 550;
+      } else if (unit >= 61 && unit <= 90) {
+        totalBill = unit * 42 + 650;
+      } else if (unit >= 90 && unit <= 120) {
+        totalBill = unit * 50 + 1500;
+      } else if (unit >= 121 && unit <= 180) {
+        totalBill = unit * 75 + 1500;
+      } else {
+        totalBill = unit * 85 + 2000;
+      }
+    });
+  }
+
+  void clearAll() {
+    namecont.clear();
+    Monthcont.clear();
+    AccCont.clear();
+    unitCont.clear();
+    phoneCont.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                Container(
+                  color: const Color.fromARGB(255, 91, 86, 86),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Hi ${namecont.text} , your ${Monthcont.text} month total bill is :",
+                      ),
+                      Text("Rs. ${totalBill}"),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
+            ),
+          ),
+          Container(
+            width: 500,
+            height: 500,
+            color: Colors.white70,
+            child: Column(
+              children: [
+                Text("Bill Details", style: TextStyle(fontSize: 24)),
+                TextField(
+                  controller: namecont,
+                  decoration: InputDecoration(
+                    labelText: "Name :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: Monthcont,
+                  decoration: InputDecoration(
+                    labelText: "Month :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: AccCont,
+                  decoration: InputDecoration(
+                    labelText: "Account Number :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: unitCont,
+                  decoration: InputDecoration(
+                    labelText: "Counsuming Unit :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: phoneCont,
+                  decoration: InputDecoration(
+                    labelText: "Phone  :",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: calculateBill,
+                  child: Text("CalculateBill"),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(onPressed: clearAll, child: Text("ClearAll")),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
